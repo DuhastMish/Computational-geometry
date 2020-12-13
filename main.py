@@ -10,27 +10,37 @@ def read_points():
     return np.array(triangles)
 
 
-def numpy_array_to_tuple(numpy_array):
-    return (numpy_array[0], numpy_array[1])
+def np_array_to_tuple(np_array):
+    return (np_array[0], np_array[1])
 
 
 def graph(triangles):
     edges_list = []
+    indexes = make_indexes_for_edges(triangles)
     for index, triangle in enumerate(triangles):
-        edge = []
         for first_edge_point in triangle:
-            first_edge_point = numpy_array_to_tuple(first_edge_point)
+            first_edge_point = np_array_to_tuple(first_edge_point)
             for second_edge_point in triangle:
-                second_edge_point = numpy_array_to_tuple(second_edge_point)
+                second_edge_point = np_array_to_tuple(second_edge_point)
                 if first_edge_point[0] < second_edge_point[0]:  # Возможно здесь ошибка. Неправильная сортировка
-                    edge.append((first_edge_point, second_edge_point, index))
+                    edges_list.append((indexes[first_edge_point], indexes[second_edge_point], index))
                 elif (first_edge_point[0] == second_edge_point[0]) and (
                         first_edge_point[1] > second_edge_point[1]):
-                    edge.append((first_edge_point, second_edge_point, index))
-
-        edges_list.append(edge)
+                    edges_list.append((indexes[first_edge_point], indexes[second_edge_point], index))
 
     return edges_list
+
+
+def make_indexes_for_edges(triangles):
+    indexes = {}
+    index = 0
+    for row in triangles:
+        for column in row:
+            point = np_array_to_tuple(column)
+            if point not in indexes:
+                indexes[point] = index
+                index += 1
+    return indexes
 
 
 def main():
