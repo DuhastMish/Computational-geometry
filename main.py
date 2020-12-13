@@ -28,7 +28,30 @@ def graph(triangles):
                         first_edge_point[1] > second_edge_point[1]):
                     edges_list.append((indexes[first_edge_point], indexes[second_edge_point], index))
 
+    edges_list = sorting_edges(edges_list)
     return edges_list
+
+
+def sorting_edges(edges_list):
+    number_of_elements = len(edges_list)
+    middle_index = number_of_elements // 2
+    half_of_edges = [0] * middle_index
+
+    sorted_edges = [0 for a in range(number_of_elements)]
+
+    for sorting_id in reversed(range(0, 2)):
+        for i in range(number_of_elements):
+            key = edges_list[i][sorting_id]
+            half_of_edges[key % middle_index] += 1
+
+        for i in range(1, middle_index):
+            half_of_edges[i] += half_of_edges[i-1]
+
+        for i in range(number_of_elements):
+            key = edges_list[i][sorting_id]
+            sorted_edges[number_of_elements - half_of_edges[key % middle_index]] = edges_list[i]
+            half_of_edges[key % middle_index] -= 1
+    return sorted_edges
 
 
 def make_indexes_for_edges(triangles):
