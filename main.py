@@ -1,3 +1,5 @@
+from collections import deque
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +15,28 @@ def read_points():
 
 def np_array_to_tuple(np_array):
     return (np_array[0], np_array[1])
+
+
+def find_intersection(edges_list, point_index):
+    intersections = [0 for a in edges_list]
+    queue = deque()
+    queue.append(point_index)
+    visited_list = []
+    for vertex in range(len(edges_list)):
+        if vertex == point_index:
+            visited_list.append(True)
+        else:
+            visited_list.append(False)
+    # import pdb; pdb.set_trace()
+    while queue:
+        point = int(queue.popleft())
+        for index in edges_list[point]:
+            # import pdb; pdb.set_trace()
+            if not visited_list[index]:
+                intersections[index] = intersections[point] + 1
+                visited_list[index] = True
+                queue.append(index)
+    return int(np.argmax(intersections))
 
 
 def graph(triangles):
@@ -36,11 +60,10 @@ def graph(triangles):
 
     new_edges = [[] for a in range(triangles.shape[0])]
     for i in range(len(edges_list) - 1):
-        if (edges_list[i])[:-1] == (edges_list[i + 1])[:-1]:
+        if edges_list[i][:-1] == edges_list[i + 1][:-1]:
             new_edges[edges_list[i][-1]].append(edges_list[i + 1][-1])
             new_edges[edges_list[i + 1][-1]].append(edges_list[i][-1])
-
-    return edges_list
+    return new_edges
 
 
 def sorting_edges(edges_list):
@@ -80,7 +103,11 @@ def make_indexes_for_edges(triangles):
 
 def main():
     triangles = read_points()
+    start_time = datetime.now()
     edges_list = graph(triangles)
+    intersection_number = find_intersection(edges_list, 0)
+    print(f"time: {(datetime.now() - start_time).total_seconds() * 1000.0} msc")
+    print(f"Maximum intersections: {intersection_number}")
 
 
 if __name__ == '__main__':
