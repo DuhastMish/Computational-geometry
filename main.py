@@ -35,7 +35,7 @@ def find_intersection(edges_list, point_index):
                 intersections[index] = intersections[point] + 1
                 visited_list[index] = True
                 queue.append(index)
-    return int(np.argmax(intersections))
+    return np.array(intersections)
 
 
 def graph(triangles):
@@ -108,8 +108,10 @@ def main():
     triangles = read_points()
     start_time = datetime.now()
     edges_list = graph(triangles)
-    intersection_number = find_intersection(edges_list, 0)
-    intersection_number = find_intersection(edges_list, intersection_number)
+    intersection_number = np.argmax(find_intersection(edges_list, 0))
+    # import pdb; pdb.set_trace()
+    # test = np.argmax(intersection_number)
+    intersection_number = max(find_intersection(edges_list, intersection_number))
     print(f"time: {(datetime.now() - start_time).total_seconds() * 1000.0} msc")
     print(f"Maximum intersections: {intersection_number}")
 
