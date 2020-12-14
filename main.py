@@ -109,6 +109,7 @@ def main():
     start_time = datetime.now()
     edges_list = graph(triangles)
     intersection_number = find_intersection(edges_list, 0)
+    intersection_number = find_intersection(edges_list, intersection_number)
     print(f"time: {(datetime.now() - start_time).total_seconds() * 1000.0} msc")
     print(f"Maximum intersections: {intersection_number}")
 
